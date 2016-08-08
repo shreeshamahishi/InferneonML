@@ -26,8 +26,20 @@ class BayesianBeliefNetwork(var allNodes: List[Node]) extends Serializable {
     require(allNodes.contains(target), "The graph does not contain " + target)
     require(!addingEdgeCreatesCycle(source, target), "Addding an edge between " + source + " and " + target + " creates a cycle in the graph.")
 
-    edges += Edge(source, target)
-    true
+    if(!edgeExists(source, target)) {
+      edges += Edge(source, target)
+      true
+    }
+    else{
+      false
+    }
+  }
+
+  def edgeExists(source: Node, target: Node): Boolean = {
+    require(allNodes.contains(source), "The graph does not contain " + source)
+    require(allNodes.contains(target), "The graph does not contain " + target)
+    val edge = Edge(source, target)
+    if(edges.contains(edge)){ true } else{ false }
   }
 
   def getChildNodes(source:Node): List[Node] = {
