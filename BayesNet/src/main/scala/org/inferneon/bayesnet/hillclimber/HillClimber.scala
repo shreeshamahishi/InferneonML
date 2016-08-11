@@ -1,10 +1,12 @@
 package org.inferneon.bayesnet.hillclimber
 
-import org.apache.spark.Logging
+import org.apache.spark.{Logging, SparkContext}
+import org.apache.spark.api.java.JavaRDD
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.rdd.RDD
 import org.inferneon.bayesnet.core._
 import org.inferneon.bayesnet.utils.MathUtils
+import org.inferneon.bayesnet.DataUtils
 
 import scala.language.postfixOps
 
@@ -43,7 +45,7 @@ object HillClimber extends Serializable with Logging {
     * @return                    The Bayesian belief network learnt.
     */
   def learnNetwork(input: RDD[LabeledPoint],
-                   maxNumberOfParents: Double = 2,
+                   maxNumberOfParents: Int,
                    prior: Double,
                    isCausal: Boolean,
                    classIndex : Int,
@@ -52,6 +54,43 @@ object HillClimber extends Serializable with Logging {
     val hillClimber = new HillClimber(maxNumberOfParents, prior, isCausal, classIndex, schema, scoringType)
     hillClimber.run(input)
   }
+
+  /* Java-friendly version of learnNetwork() */
+  def learnNetwork(input: JavaRDD[LabeledPoint],
+                   maxNumberOfParents: Int,
+                   prior: Double,
+                   isCausal: Boolean,
+                   classIndex : Int,
+                   format : java.util.List[java.util.Map[String, java.util.List[String]]],
+                   scoringType: ScoringType.Value) : BayesianBeliefNetwork = {
+
+    val rdd = input.rdd
+
+    val hillClimber = new HillClimber(maxNumberOfParents, prior, isCausal, classIndex,
+                DataUtils.schemaFromJava(format), scoringType)
+    hillClimber.run(rdd)
+  }
+
+  /* Even more Java-friendly version of learnNetwork(). Needs only the raw data in RDD format*/
+  def learnNetwork(input: JavaRDD[String],
+                   maxNumberOfParents: Int,
+                   prior: Double,
+                   isCausal: Boolean,
+                   classIndex : Int,
+                   caseSensitive: Boolean,
+                   format : java.util.List[java.util.Map[String, java.util.List[String]]],
+                   scoringType: ScoringType.Value) : BayesianBeliefNetwork = {
+
+    val rdd = input.rdd
+    val schema = DataUtils.schemaFromJava(format)
+    val (errors, labeledPointsRDD) = DataUtils.loadLabeledPointsRDD(input.sparkContext, rdd, schema,
+                             classIndex : Int, caseSensitive: Boolean)
+    require(errors.isEmpty)
+    val lbPointsRDD: RDD[LabeledPoint] = labeledPointsRDD filter {_.isDefined} map {_.get}
+    val hillClimber = new HillClimber(maxNumberOfParents, prior, isCausal, classIndex, schema, scoringType)
+    hillClimber.run(lbPointsRDD)
+  }
+
 }
 
 class HillClimber(private val maxNumberOfParents: Double,

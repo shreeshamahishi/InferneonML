@@ -4,7 +4,7 @@ import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 import org.inferneon.bayesnet.core.Node
-import org.inferneon.datautils.DataUtils
+import org.inferneon.bayesnet.DataUtils
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 /**

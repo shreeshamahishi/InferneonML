@@ -5,8 +5,8 @@ import org.apache.spark.rdd.RDD
 import org.inferneon.bayesnet.hillclimber.ScoringType
 
 import scala.collection.mutable.ArrayBuffer
-import scala.language.postfixOps
 import scala.tools.nsc.util._
+import scala.language.postfixOps
 
 /**
   * This trait denotes a bunch of useful methods that are needed to implement a Bayesian belief network algorithm. This

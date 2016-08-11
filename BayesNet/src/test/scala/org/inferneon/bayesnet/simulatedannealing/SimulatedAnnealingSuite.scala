@@ -1,9 +1,10 @@
-package org.inferneon.bayesnet.simulatedannealing
+package bayesnet.SimulatedAnnealing
 
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.inferneon.datautils.DataUtils
+import org.inferneon.bayesnet.simulatedannealing.SimulatedAnnealing
+import org.inferneon.bayesnet.DataUtils
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 /**
@@ -41,27 +42,9 @@ class SimulatedAnnealingSuite extends FunSuite with BeforeAndAfterAll {
 
     val rdd: RDD[Option[LabeledPoint]] = sc.parallelize(labeledPoints)
     val pointsRDD: RDD[LabeledPoint] = rdd filter {lp => lp.isDefined} map {point => point.get}
-    val network = SimulatedAnnealing.learnNetwork(pointsRDD, 2, 0.5, false, 3, schema, 10.0, 200, 0.999)
+    val network = SimulatedAnnealing.learnNetwork(pointsRDD, 2, 0.5, false, 3, schema, 10.0, 300, 0.999)
     assert(network.allNodes.length == 4)
-    //assert(network.getParents(Node(3, true)).isEmpty)   // Sales is the root
     println("Network 1: ")
     println(network.treeDescription(schema))
   }
-
-  test("Causal network") {
-    val filePath = "/SampleSales.csv"
-    val fullPath = getClass.getResource(filePath).getFile
-    val result = DataUtils.inferSchema(fullPath, 3, false)
-    val schema = result._2
-    val labeledPoints = result._3
-
-    val rdd: RDD[Option[LabeledPoint]] = sc.parallelize(labeledPoints)
-    val pointsRDD: RDD[LabeledPoint] = rdd filter {lp => lp.isDefined} map {point => point.get}
-    val network = SimulatedAnnealing.learnNetwork(pointsRDD, 2, 0.5, true, 3, schema, 10.0, 200, 0.999)
-    assert(network.allNodes.length == 4)
-    // assert(network.getParents(Node(3, true)).isEmpty)   // Sales is the root
-    println("Network 1: ")
-    println(network.treeDescription(schema))
-  }
-
 }

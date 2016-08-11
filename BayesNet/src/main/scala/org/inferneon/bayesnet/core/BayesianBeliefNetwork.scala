@@ -1,6 +1,11 @@
 package org.inferneon.bayesnet.core
 
+import java.util
+
+import org.inferneon.bayesnet.DataUtils
+
 import scala.collection.mutable
+import scala.collection.JavaConverters._
 import scala.language.postfixOps
 /**
   * Represent the DAG (directed acyclic graph) of the Bayesian belief network. It consists of a collection of nodes,
@@ -161,8 +166,28 @@ class BayesianBeliefNetwork(var allNodes: List[Node]) extends Serializable {
     }
     sbuf.toString
   }
+
+  def treeDescription(format: java.util.List[java.util.Map[String, java.util.List[String]]]): String = {
+    treeDescription(DataUtils.schemaFromJava(format))
+  }
+
 }
 
+class JavaBayesianBeliefNetwork(val nodes : java.util.List[Node], val edges: java.util.Set[Edge], val cpts: java.util.Map[Int, JavaCPT])
+
 object BayesianBeliefNetwork {
-  def emptyNetwork() : BayesianBeliefNetwork =   new BayesianBeliefNetwork(List.empty)
+  def emptyNetwork() : BayesianBeliefNetwork = new BayesianBeliefNetwork(List.empty)
+
+  def getJavaBayesianBeliefNetwork(network : BayesianBeliefNetwork) : JavaBayesianBeliefNetwork = {
+    val nodes : java.util.List[Node] =  network.allNodes.asJava
+    val edges : java.util.Set[Edge] = network.edges.asJava
+    val cpts = new java.util.HashMap[Int, JavaCPT]()
+
+    network.cpts foreach { case (id, cpt ) =>
+      cpts.put(id, ConditionalProbabilityTable.getJavaCPT(cpt))
+    }
+
+    new JavaBayesianBeliefNetwork(nodes, edges, cpts)
+  }
+
 }

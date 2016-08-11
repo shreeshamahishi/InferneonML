@@ -1,4 +1,4 @@
-package org.inferneon.datautils
+package org.inferneon.bayesnet
 
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint
@@ -871,7 +871,7 @@ class DataUtilsSuite extends FunSuite with BeforeAndAfterAll {
 
     val rdd = sc.textFile(fullPath, sc.defaultMinPartitions)
 
-    val (errors, points) = DataUtils.loadLabeledPointsRDD(sc, rdd, filePath, schema, 4, true)
+    val (errors, points) = DataUtils.loadLabeledPointsRDD(sc, rdd, schema, 4, true)
 
     assert(errors.isEmpty)
     pointsForNominalValuesOnlyNoMissing(points.collect().toList)
@@ -887,7 +887,7 @@ class DataUtilsSuite extends FunSuite with BeforeAndAfterAll {
       ("F4", Array("Y", "N")))
 
     val rdd = sc.textFile(fullPath, sc.defaultMinPartitions)
-    val (errors, pointsRDD) = DataUtils.loadLabeledPointsRDD(sc, rdd, filePath, schema, 3, true)
+    val (errors, pointsRDD) = DataUtils.loadLabeledPointsRDD(sc, rdd, schema, 3, true)
     val points = pointsRDD.collect()
     assert(points(0).get.label === 0.0)
     assert(points(0).get.features === Vectors.dense(Array(0.0,23.0,0.0)))

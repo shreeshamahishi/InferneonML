@@ -1,10 +1,11 @@
-package org.inferneon.datautils
+package org.inferneon.bayesnet
 
 import java.io.FileNotFoundException
 import java.nio.charset.MalformedInputException
 import java.nio.file.{Files, Paths}
 
 import org.apache.spark.SparkContext
+import org.apache.spark.api.java.JavaRDD
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.rdd.RDD
@@ -12,6 +13,7 @@ import org.apache.spark.rdd.RDD
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.io.{BufferedSource, Source}
+import scala.collection.JavaConverters._
 
 /**
   * Helper methods to infer schema given a CSV file or load LabeledPoints given data and a schema.
@@ -19,7 +21,7 @@ import scala.io.{BufferedSource, Source}
   *
   * inferSchema : Infers the schema from given CSV data and also returns a list of labelled points if a schema could
   *               be determined.
-
+  *
   * loadLabeledPoints: Returns a list of LabeledPoints given the CSV data and a schema defining the data.
   *
   * loadLabeledPointsRDD: Returns a RDD of LabeledPoints given the CSV data as an RDD and a schema defining the data.
@@ -325,7 +327,7 @@ object DataUtils {
     *         LabeledPoint is created with a dense Vector for that row.
     */
 
-  def loadLabeledPointsRDD(sc: SparkContext, rdd: RDD[String], path : String, schema : Array[(String, Array[String])],
+  def loadLabeledPointsRDD(sc: SparkContext, rdd: RDD[String], schema : Array[(String, Array[String])],
                            classIndex : Int, caseSensitive: Boolean):
   (ArrayBuffer[String], RDD[Option[LabeledPoint]]) ={
     //require(Files.exists(Paths.get(path)), "Cannot find input file.")
@@ -371,6 +373,19 @@ object DataUtils {
       (errsBuff, labeledPoints)
     }
   }
+
+  /** Java-friendly version of loadLabeledPointsRDD */
+  def  loadJavaLabeledPointsRDD(sc: SparkContext, javaRDD: JavaRDD[String], format : java.util.List[java.util.Map[String, java.util.List[String]]],
+                                classIndex : Int, caseSensitive: Boolean): JavaRDD[LabeledPoint] = {
+
+    val schema = schemaFromJava(format)
+    val rdd = javaRDD.rdd
+    val (errors, points) = loadLabeledPointsRDD(sc, rdd, schema, classIndex, caseSensitive)
+    require(errors.size == 0)
+    val pointsRDD = points filter {_.isDefined} map {_.get}
+    JavaRDD.fromRDD(pointsRDD)
+  }
+
 
   private def createLabeledPointFromLine(line : String, lineCount : Long, numColumns: Int,
                                          classIndex: Int, allFields: mutable.HashMap[Int, ArrayBuffer[String]],
@@ -649,5 +664,18 @@ object DataUtils {
     } catch {
       case e: NumberFormatException => true
     }
+  }
+
+  def schemaFromJava(format : java.util.List[java.util.Map[String, java.util.List[String]]]): Array[(String, Array[String])] ={
+    val schema = new Array[(String, Array[String])](format.size())
+    var i = 0
+    while(i < format.size()){
+      val element = format.get(i)
+      val featureName = element.keySet().iterator().next()
+      val featureValues = element.values().iterator().next().asScala.toArray
+      schema(i) = (featureName, featureValues)
+      i = i + 1
+    }
+    schema
   }
 }
