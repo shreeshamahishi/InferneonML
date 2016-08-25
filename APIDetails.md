@@ -33,18 +33,20 @@ The parameters are defined as follows:
                           sensitive manner, and case-insensitive otherwise.
 
 The return value is a three-tuple value which represents the following:
-             - The first element of the tuple is an array containing a descriptive Strings of errors. Errors
+- The first element of the tuple is an array containing a descriptive Strings of errors. Errors
              might be found due to inconsistency in the data. If no errors are found, this array buffer
              will be empty. Each error description starts with the line number at which the error was seen.
              The line numbers are 0-based indexed. It is also possible that even when a reasonable schema was inferred,
              this array may not be empty.
-             - The second element of the tuple is an array representing the schema. Each element of this
+
+- The second element of the tuple is an array representing the schema. Each element of this
              array identifies a feature at a corresponding column in the data. A feature is again represented
              by a 2-tuple. The first element of the feature tuple is the name of the feature as found in the
              first row (header) of the data. The second element of the feature tuple is an array of categorical
              values for that feature as found in the data. If a feature is inferred to be numerical,
              this corresponding array will be empty.
-             - The third element of the tuple is the list of labeled points. They are wrapped in an Optional
+
+- The third element of the tuple is the list of labeled points. They are wrapped in an Optional
              value to address the possibility of inconsistency of the data at the corresponding row. If a row has
              missing data or some elements of a row could not be inferred, a LabeledPoint is created with a
              sparse Vector for that row; else if a row has data that could be inferred correctly for all fields, a
