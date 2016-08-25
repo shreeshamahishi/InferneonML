@@ -139,6 +139,7 @@ A labeled point is returned for each row in the data with a the label value and 
                         a zero-based indexed integer and must be lesser than the number of features suggested in the
 
 - caseSensitive:  If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
+
 The two-tuple value represents the following:
 
 - The first element of the tuple is a RDD of descriptive Strings of errors. Errors
