@@ -13,19 +13,17 @@ def inferSchema(file: String, classIndex: Int, caseSensitive: Boolean): (ArrayBu
 ```
 
 Given the path of a comma-separated file (CSV) file which contains data with header information, this method attempts to infer the schema from the data. The schema is inferred based on the following assumptions:
-     -The first row of the file represents the header information. Each comma-delimited field in this header
+
+-The first row of the file represents the header information. Each comma-delimited field in this header
      is considered to denote the name of the feature.
     -The data can contain missing information. This can either show up in the file as empty strings (or
      whitespaces) or can be represented by a question mark ( ? ).
-    -The data can contain commas; however in such cases, that data item must be enclosed in double-quotes.
+
+-The data can contain commas; however in such cases, that data item must be enclosed in double-quotes.
      E.g.: "Hello, World". Moreover, escaped strings are not handled; in such cases, behaviour is undefined.
-    -The data can consist of both categorical (nominal) features as well as numerical data.
-    
-     If a schema is successfully inferred (or whatever best is inferred), the schema as well as a list of labeled
-     points are returned. A labeled point is returned for each row in the data with a the label value and a
-     dense or sparse Vector. For a categorical feature, the corresponding entry in the Vector is a zero-indexed
-     integer that corresponds to the index of that value int that categorical feature. For a numerical feature,
-     the entry in the Vector will be the number itself. If a schema cannot be inferred, empty values for both the
+-The data can consist of both categorical (nominal) features as well as numerical data.
+
+If a schema is successfully inferred (or whatever best is inferred), the schema as well as a list of labeled points are returned. A labeled point is returned for each row in the data with a the label value and a dense or sparse Vector. For a categorical feature, the corresponding entry in the Vector is a zero-indexd integer that corresponds to the index of that value int that categorical feature. For a numerical feature, the entry in the Vector will be the number itself. If a schema cannot be inferred, empty values for both the
      schema as well as the list of labeled points will be returned. Please read the description of the return
      value for further information.
     
