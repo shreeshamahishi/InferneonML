@@ -140,7 +140,7 @@ A labeled point is returned for each row in the data with a the label value and 
 
 - caseSensitive:  If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
 
-The two-tuple value represents the following:
+The two-tuple return value represents the following:
 
 - The first element of the tuple is a RDD of descriptive Strings of errors. Errors
              might be found due to inconsistency in the data. If no errors are found, this RDD
