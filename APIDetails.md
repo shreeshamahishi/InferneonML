@@ -26,11 +26,11 @@ Given the path of a comma-separated file (CSV) file which contains data with hea
 If a schema is successfully inferred (or whatever best is inferred), the schema as well as a list of labeled points are returned. A labeled point is returned for each row in the data with a the label value and a dense or sparse Vector. For a categorical feature, the corresponding entry in the Vector is a zero-indexd integer that corresponds to the index of that value int that categorical feature. For a numerical feature, the entry in the Vector will be the number itself. If a schema cannot be inferred, empty values for both the schema as well as the list of labeled points will be returned. Please read the description of the return value for further information. 
 
 The parameters are defined as follows:
-     -file Path of the file representing the input file.
-    -classIndex  The class or target index indicating which column represents the class. This must be
+- file: Path of the file representing the input file.
+    
+-classIndex:  The class or target index indicating which column represents the class. This must be
                         a zero-indexed integer and must be lesser than the number of columns in the header.
-    -caseSensitive If this is specified as "true" categorical values will be checked in a case-
-                          sensitive manner, and case-insensitive otherwise.
+-caseSensitive: If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
 
 The return value is a three-tuple value which represents the following:
 - The first element of the tuple is an array containing a descriptive Strings of errors. Errors
@@ -77,18 +77,19 @@ The following assumptions are made:
 A labeled point is returned for each row in the data with a the label value and a dense or sparse Vector. For a
      categorical feature, the corresponding entry in the Vector is a zero-indexed integer that corresponds to the
      index of that value in that categorical feature. For a numerical feature, the entry in the Vector will be the
-     number itself.
-- path Path of the file representing the input file.
+     number itself. The parameters are:
 
-- schema  An array of tuples representing the schema. Each element of this array should identify a feature
+- path: Path of the file representing the input file.
+
+- schema:  An array of tuples representing the schema. Each element of this array should identify a feature
              at a corresponding column in the data. A feature is again represented by a 2-tuple. The first element
              of the feature tuple should denote the name of the feature. The second element of the feature tuple
              should be an array of categorical values for that feature as found in the data. If a feature is numerical,
              this corresponding array should be empty.
-- classIndex  The class or target index indicating which column represents the class. This must be
+- classIndex:  The class or target index indicating which column represents the class. This must be
                         a zero-based indexed integer and must be lesser than the number of features suggested in the
                         schema.
-- caseSensitive If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
+- caseSensitive: If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
 
 The two-tuple value represents the following:
 - The first element of the tuple is an array containing a descriptive Strings of errors. Errors
@@ -104,53 +105,56 @@ The two-tuple value represents the following:
 
 ## DataUtils.loadLabeledPointsRDD()
 
-Given RDD of String representing CSV (comma-separated values) data and a suggested schema, this method
-     attempts to create a RDD of LabeledPoint objects. The signature of the method is as defined as follows:
-     def loadLabeledPoints(path : String, schema : Array[(String, Array[String])], classIndex : Int, caseSensitive: Boolean):
-  (ArrayBuffer[String], Array[Option[LabeledPoint]])
-     
-     The following assumptions are made:
-    
-     1. The ordering of the columns correspond to the one specified in the schema.
-     2. The data can contain missing information. This can either show up in the file as empty strings (or
+Given RDD of String representing CSV (comma-separated values) data and a suggested schema, this method attempts to create a RDD of LabeledPoint objects. The signature of the method is as defined as follows:
+```
+     def loadLabeledPointsRDD(sc: SparkContext, rdd: RDD[String], schema : Array[(String, Array[String])],
+                           classIndex : Int, caseSensitive: Boolean):
+  			   (ArrayBuffer[String], RDD[Option[LabeledPoint]])
+```
+The following assumptions are made:
+
+- The ordering of the columns correspond to the one specified in the schema.
+
+- The data can contain missing information. This can either show up in the file as empty strings (or
      whitespaces) or can be represented by a question mark ( ? ).
-     3. The data can contain commas; however in such cases, that data item must be enclosed in double-quotes.
+- The data can contain commas; however in such cases, that data item must be enclosed in double-quotes.
      E.g.: "Hello, World". Moreover, escaped strings are not handled; in such cases, behaviour is undefined.
-     4. The data can consist of both categorical (nominal) features as well as numerical data.
-    
-     A labeled point is returned for each row in the data with a the label value and a dense or sparse Vector. For a
+- The data can consist of both categorical (nominal) features as well as numerical data.
+
+A labeled point is returned for each row in the data with a the label value and a dense or sparse Vector. For a
      categorical feature, the corresponding entry in the Vector is a zero-based indexed integer that corresponds to the
      index of that value in that categorical feature. For a numerical feature, the entry in the Vector will be the
-     number itself.
-    
-     @param sc The SparkContext object
-     @param rdd The RDD of Strings which represents the data.
-     @param schema  An array of tuples representing the schema. Each element of this array should identify a feature
+     number itself. The parameters are:
+- sc: The SparkContext object
+
+- rdd: The RDD of Strings which represents the data.
+     
+- schema:  An array of tuples representing the schema. Each element of this array should identify a feature
              at a corresponding column in the data. A feature is again represented by a 2-tuple. The first element
              of the feature tuple should denote the name of the feature. The second element of the feature tuple
              should be an array of categorical values for that feature as found in the data. If a feature is numerical,
              this corresponding array should be empty.
-     @param classIndex  The class or target index indicating which column represents the class. This must be
+
+- classIndex  The class or target index indicating which column represents the class. This must be
                         a zero-based indexed integer and must be lesser than the number of features suggested in the
-                        schema.
-     @param caseSensitive If this is specified as "true" categorical values will be checked in a case-
-                          sensitive manner, and case-insensitive otherwise.
-     @return A two-tuple value which represents the following:
-             1. The first element of the tuple is a RDD of descriptive Strings of errors. Errors
+
+- caseSensitive If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
+The two-tuple value represents the following:
+
+- The first element of the tuple is a RDD of descriptive Strings of errors. Errors
              might be found due to inconsistency in the data. If no errors are found, this RDD
              will be empty. Each error description starts with the line number at which the error was seen.
              The line numbers are 0-indexed.
-             2. The second element of the tuple is the resulting RDD of labeled points. They are wrapped in an Optional
+- The second element of the tuple is the resulting RDD of labeled points. They are wrapped in an Optional
              value to address the possibility of inconsistency of the data at the corresponding row. If a row has
              missing data or some elements of a row could not be inferred, a LabeledPoint is created with a
              sparse Vector for that row; else if a row has data that could be inferred correctly for all fields, a
              LabeledPoint is created with a dense Vector for that row.
-    /
+
 	
 ## HillClimber.learnNetwork()
 
-/
-   This algorithm learns a Bayesian belief Network from data based on the hill climbing algorithm . Hill climbing is an
+This algorithm learns a Bayesian belief Network from data based on the hill climbing algorithm . Hill climbing is an
    optimization technique that uses local searching. In the case of learning Bayesian Belief Networks, the technique
    starts with an "initial guess" by assuming a particular configuration of the network then proceeds to by making
    incremental changes, one minor step at a time. In this implementation, the changes include either removing an
@@ -165,25 +169,41 @@ Given RDD of String representing CSV (comma-separated values) data and a suggest
   
    The input data is assumed to be in the form of a RDD of LabeledPoints and only works with categorical data. The RDD
    can be created from categorical data using the DataUtils utility.
-  
-  
-   @param input               Data represented as a RDD of LabeledPoints. It is assumed that the data is categorical.
-   @param maxNumberOfParents  The maximum number of parents a node can have in the graph.
-   @param prior               Prior on counts
-   @param isCausal            It this is set to true, the initial network will have edges from sources representing
+   The signature of the method is defined as follows:
+   
+   ```
+   def learnNetwork(input: RDD[LabeledPoint],
+                   maxNumberOfParents: Int,
+                   prior: Double,
+                   isCausal: Boolean,
+                   classIndex : Int,
+                   schema : Array[(String, Array[String])],
+                   scoringType: ScoringType.Value = ScoringType.ENTROPY) : BayesianBeliefNetwork 
+   ```
+ 
+ The parameters are:
+ 
+- input:               Data represented as a RDD of LabeledPoints. It is assumed that the data is categorical.
+
+- maxNumberOfParents:  The maximum number of parents a node can have in the graph.
+- prior:               Prior on counts
+
+- isCausal:            It this is set to true, the initial network will have edges from sources representing
                               the features to the label. If it is false, the initial edges is configured to start
                               with edges leading from the label to all other feature nodes.
-   @param classIndex          The class index in the data.
-   @param schema              The schema of the categorical data.
-   @param scoringType         An enum indicating the method used for scoring.
-   @return                    The Bayesian belief network learnt.
-  
-  /
+   
+- classIndex          The class index in the data.
+
+-  schema              The schema of the categorical data.
+
+- scoringType         An enum indicating the method used for scoring.
+
+The returned value is a the Bayesian belief network learnt.
+
 
 ## SimulatedAnnealing.learnNetwork()
 
-/
-   This algorithm learns a Bayesian belief Network from data based on the simulated annealing metaheuristic. Simulated
+This algorithm learns a Bayesian belief Network from data based on the simulated annealing metaheuristic. Simulated
    annealing is an optimization technique that uses Monte Carlo simulation. The idea for this technique has its roots
    in a standard practice in the metallurgical industry where materials are heated to high temperatures and then
    cooled gradually. The process of slow cooling can be viewed as equivalent to gradually reducing probability of
@@ -198,20 +218,37 @@ Given RDD of String representing CSV (comma-separated values) data and a suggest
    The algorithm thus results in a random walk over the search space and keeps reducing the probability of finding
    bad solutions as the temperature decreases. This ensures that there is a good chance of a solution NOT getting
    lodged into a local minimum, thereby improving the chance of a good approximation of the global minimum.
-  
-   @param input               Data represented as a RDD of LabeledPoints. It is assumed that the data is categorical.
-   @param maxNumberOfParents  The maximum number of parents a node can have in the graph.
-   @param prior               Prior on counts
-   @param isCausal            It this is set to true, the initial network will have edges from sources representing
+   The signature of the method is defined as follows:
+   
+   ```
+    def learnNetwork(input: RDD[LabeledPoint],
+                     maxNumberOfParents: Double = 2,
+                     prior: Double,
+                     isCausal: Boolean,
+                     classIndex : Int,
+                     schema : Array[(String, Array[String])],
+                     initTemperature : Double,
+                     maxIterations: Int,
+                     temperatureStep : Double,
+                     scoringType: ScoringType.Value = ScoringType.ENTROPY) : BayesianBeliefNetwork
+   ```
+ 
+ The parameters are defined as follows:
+ - input:               Data represented as a RDD of LabeledPoints. It is assumed that the data is categorical.
+
+- maxNumberOfParents:  The maximum number of parents a node can have in the graph.
+- prior:               Prior on counts
+- isCausal:            It this is set to true, the initial network will have edges from sources representing
                               the features to the label. If it is false, the initial edges is configured to start
                               with edges leading from the label to all other feature nodes.
-   @param classIndex          The class index in the data.
-   @param schema              The schema of the categorical data.
-   @param initTemperature     The initial temperature at which annealing commences.
-   @param maxIterations       The maximum number of steps to be attempted in the random walk.
-   @param temperatureStep     The change in temperature after each iteration.
-   @param scoringType         An enum indicating the method used for scoring.
-   @return                    The Bayesian belief network learnt.
-  /
+- classIndex:          The class index in the data.
+- schema:              The schema of the categorical data.
+- initTemperature:     The initial temperature at which annealing commences.
+- maxIterations:       The maximum number of steps to be attempted in the random walk.
+- temperatureStep:     The change in temperature after each iteration.
+- scoringType:         An enum indicating the method used for scoring.
+
+The returned value is the Bayesian belief network learnt.
+
   
 
