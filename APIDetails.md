@@ -56,7 +56,8 @@ The return value is a three-tuple value which represents the following:
 
 Given the path of a comma-separated file (CSV) file which contains data and a suggested schema, this method
      attempts to create a list of LabeledPoint objects. The following assumptions are made:
-	 - There is NO header information; the schema contains all the information needed for generating the LabeledPoint
+     
+     - There is NO header information; the schema contains all the information needed for generating the LabeledPoint
      objects. The ordering of the columns correspond to the one specified in the schema.
 	 
      - The data can contain missing information. This can either show up in the file as empty strings (or
@@ -64,8 +65,8 @@ Given the path of a comma-separated file (CSV) file which contains data and a su
 	 
      - The data can contain commas; however in such cases, that data item must be enclosed in double-quotes.	 
      E.g.: "Hello, World". Moreover, escaped strings are not handled; in such cases, behaviour is undefined.
-	 
-	 - The data can consist of both categorical (nominal) features as well as numerical data.
+
+     - The data can consist of both categorical (nominal) features as well as numerical data.
 	 
 A labeled point is returned for each row in the data with a the label value and a dense or sparse Vector. For a
      categorical feature, the corresponding entry in the Vector is a zero-indexed integer that corresponds to the
