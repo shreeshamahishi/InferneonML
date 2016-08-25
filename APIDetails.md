@@ -31,8 +31,8 @@ The parameters are defined as follows:
                         a zero-indexed integer and must be lesser than the number of columns in the header.
     -caseSensitive If this is specified as "true" categorical values will be checked in a case-
                           sensitive manner, and case-insensitive otherwise.
-	
-    The return value is a three-tuple value which represents the following:
+
+The return value is a three-tuple value which represents the following:
              - The first element of the tuple is an array containing a descriptive Strings of errors. Errors
              might be found due to inconsistency in the data. If no errors are found, this array buffer
              will be empty. Each error description starts with the line number at which the error was seen.
