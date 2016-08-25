@@ -5,13 +5,14 @@ This document has details of the important interfaces defined in the DataUtils a
 ## DataUtils.inferSchema()
 
 The signature of the function is defined as follows:
-	
-	```def inferSchema(file: String, classIndex: Int, caseSensitive: Boolean): (ArrayBuffer[String], Array[(String, Array[String])],
-					List[Option[LabeledPoint]])```
-	
-	
 
-     Given the path of a comma-separated file (CSV) file which contains data with header information, this method
+```
+def inferSchema(file: String, classIndex: Int, caseSensitive: Boolean): (ArrayBuffer[String], 
+						Array[(String, Array[String])],
+					List[Option[LabeledPoint]])
+```
+
+Given the path of a comma-separated file (CSV) file which contains data with header information, this method
      attempts to infer the schema from the data. The schema is inferred based on the following assumptions:
     
     -The first row of the file represents the header information. Each comma-delimited field in this header
