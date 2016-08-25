@@ -2,12 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
    
-   <groupId>org.inferneon.spark</groupId>
-    <artifactId>inferneon-spark_2.10</artifactId>
+   <groupId>org.inferneon.ml</groupId>
+    <artifactId>inferneon-ml_2.10</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Inferneon Spark Project</name>
-    <url>http://inferneon.spark.org/</url>
+    <name>Inferneon ML Project</name>
 	
 	<modules>
 		<module>datautils</module>

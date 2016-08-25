@@ -26,8 +26,8 @@ import scala.collection.mutable.ArrayBuffer
   * improved, and it if hasn't, it is probably accepted based on a random number.
   *
   * The algorithm thus results in a random walk over the search space and keeps reducing the probability of finding
-  * bad solutions as the temperature decreases. This ensures that there is a good chance of a solution getting lodged
-  * into a local minimum, thereby improving the chance of a good approximation of the global minimum.
+  * bad solutions as the temperature decreases. This ensures that there is a good chance of a solution NOT getting
+  * lodged into a local minimum, thereby improving the chance of a good approximation of the global minimum.
   *
   */
 
@@ -143,15 +143,15 @@ import scala.collection.mutable.ArrayBuffer
 
       // The algorithm starts here
       val numFeatures = schema.length
-      rdd.persist()
       val network = initializeNetwork(schema, classIndex, isCausal)
-      rdd.unpersist()
       val nodes = network.allNodes
       val featureValuesCounts: Map[Int, Array[Int]] = getCategoricalCountsPerFeature(schema, nodes, rdd)
+
       // TODO: Use mapPartitions here instead of computing score for every feature?
       val baseScoresMap = featureValuesCounts map { case (featureIndex, counts) =>
         (featureIndex, computeScore(rdd, network, featureValuesCounts, featureIndex))
       }
+      rdd.cache()
 
       val baseScores =  ArrayBuffer.fill(numFeatures)(0.0)
       baseScoresMap foreach {tuple =>
@@ -208,6 +208,7 @@ import scala.collection.mutable.ArrayBuffer
       }
 
       // The network is determined, compute the conditional probability tables for each feature node.
+      println("Computing CPT now")
       val cpts = computeCPTs(schema, network, rdd, prior)
       cpts foreach {case (nodeId, cpt) => network.cpts(nodeId) = cpt}
 
