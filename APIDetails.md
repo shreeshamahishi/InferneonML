@@ -28,9 +28,9 @@ If a schema is successfully inferred (or whatever best is inferred), the schema 
 The parameters are defined as follows:
 - file: Path of the file representing the input file.
     
--classIndex:  The class or target index indicating which column represents the class. This must be
+- classIndex:  The class or target index indicating which column represents the class. This must be
                         a zero-indexed integer and must be lesser than the number of columns in the header.
--caseSensitive: If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
+- caseSensitive: If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
 
 The return value is a three-tuple value which represents the following:
 - The first element of the tuple is an array containing a descriptive Strings of errors. Errors
@@ -135,10 +135,10 @@ A labeled point is returned for each row in the data with a the label value and 
              should be an array of categorical values for that feature as found in the data. If a feature is numerical,
              this corresponding array should be empty.
 
-- classIndex  The class or target index indicating which column represents the class. This must be
+- classIndex:  The class or target index indicating which column represents the class. This must be
                         a zero-based indexed integer and must be lesser than the number of features suggested in the
 
-- caseSensitive If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
+- caseSensitive:  If this is specified as "true" categorical values will be checked in a case-sensitive manner, and case-insensitive otherwise.
 The two-tuple value represents the following:
 
 - The first element of the tuple is a RDD of descriptive Strings of errors. Errors
@@ -192,11 +192,11 @@ This algorithm learns a Bayesian belief Network from data based on the hill clim
                               the features to the label. If it is false, the initial edges is configured to start
                               with edges leading from the label to all other feature nodes.
    
-- classIndex          The class index in the data.
+- classIndex:          The class index in the data.
 
--  schema              The schema of the categorical data.
+- schema:              The schema of the categorical data.
 
-- scoringType         An enum indicating the method used for scoring.
+- scoringType:         An enum indicating the method used for scoring.
 
 The returned value is a the Bayesian belief network learnt.
 
