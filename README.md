@@ -5,7 +5,7 @@ Inferneon ML is an open source machine learning library that can run on the dist
 
 **The project uses Scala as the implementing language. The BayesNet module also consists of Java-friendly APIs that Java programmers can use to integrate the library into their code.**
 
-This document describes the details of the requirements of the project, how to build the project and an outline of the development environment. For information on the usage of the algorithm and specific API-level details, please refer to this document.
+This document describes the details of the requirements of the project, how to build the project and an outline of the development environment. For information on the usage of the algorithm and specific API-level details, please refer to the [API documentation] (/APIUsage.md).
 
 ##Requirements##
 - Scala: 2.10.5
@@ -40,7 +40,7 @@ where the inputs \<path_to_datautils_jar\> and \<path_to_bayesnet_jar\> refer to
 </dependency>
 ```
 
-The libraries can now be used in your code. Please refer to the API documentation for information on how to use and integrate the algorithms.
+The libraries can now be used in your code. Please refer to the [API documentation]  (/APIUsage.md) for information on how to use and integrate the algorithms.
 
 ##Development environment
 
