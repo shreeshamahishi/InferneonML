@@ -181,6 +181,7 @@ Both the algorithms use local search methods, i.e., small changes are made at ea
 Both the algorithms have Java-friend APIs that can be used to call from Java code. For the purpose of illustration, consider the following data with “Sales” as the target feature that depends on upon three other features (**Example 3**) :
 
 **_IsMetro, MidAge, Gender, Sales_**
+
 _y,y,f,y_
 
 _n,y,f,y_
