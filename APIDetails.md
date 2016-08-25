@@ -12,10 +12,8 @@ def inferSchema(file: String, classIndex: Int, caseSensitive: Boolean): (ArrayBu
 					List[Option[LabeledPoint]])
 ```
 
-Given the path of a comma-separated file (CSV) file which contains data with header information, this method
-     attempts to infer the schema from the data. The schema is inferred based on the following assumptions:
-    
-    -The first row of the file represents the header information. Each comma-delimited field in this header
+Given the path of a comma-separated file (CSV) file which contains data with header information, this method attempts to infer the schema from the data. The schema is inferred based on the following assumptions:
+     -The first row of the file represents the header information. Each comma-delimited field in this header
      is considered to denote the name of the feature.
     -The data can contain missing information. This can either show up in the file as empty strings (or
      whitespaces) or can be represented by a question mark ( ? ).
